@@ -17,6 +17,7 @@ Full details, VRAM notes and troubleshooting: **[docs/qwen.md](docs/qwen.md)**.
 
 ## 1. Setup
 ```
+
 python -m venv .venv && .venv\Scripts\activate
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124   # CUDA build first
 pip install -r requirements.txt
