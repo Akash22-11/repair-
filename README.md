@@ -13,7 +13,8 @@ Frontend --POST /analyze--
    -> safety.apply (can only raise risk / remove unsafe actions)
    -> response  {status, object, problem, confidence, severity, location, observations, ...}
 ```
-Full details, VRAM notes and troubleshooting: **[docs/qwen.md](docs/qwen.md)**.
+Full details, VRAM notes and troubleshooting: **[docs/qwen.md](docs/q
+wen.md)**.
 
 ## 1. Setup
 ```
