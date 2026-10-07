@@ -1,0 +1,16 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+pydantic>=2.5
+pillow>=10.0
+pytest>=8.0
+httpx>=0.27            # FastAPI TestClient
+
+# --- local Qwen3-VL inference (Qwen3-VL needs transformers >= 4.57) ---
+# Install a CUDA build of torch FIRST, see docs/qwen.md. Plain `pip install torch`
+# on Windows gives a CPU-only build.
+torch>=2.4
+torchvision>=0.19                                     # required by the Qwen3-VL processor
+transformers>=4.57.0
+accelerate>=1.0
+bitsandbytes>=0.45; sys_platform != "darwin"          # 4-bit/8-bit (CUDA only)

@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# model weights / caches must never be committed
+hf_cache/
+models/
+*.safetensors
+*.bin
+*.gguf
+tests/out/
