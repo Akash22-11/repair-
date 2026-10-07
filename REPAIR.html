@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>REPAIR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500&display=swap">
+<style>
+:root{--bg:#0b0b0a;--fg:#f1efe9;--mute:#8d8a82;--line:#26251f;--acc:#e8c36a;--hi:#ff5b45;--med:#e8c36a;--low:#7fcf9a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f2ec;--fg:#14130f;--mute:#77746a;--line:#d9d6cb;--acc:#9a6b00;--hi:#d63a24;--med:#9a6b00;--low:#2f8a53}}
+:root[data-theme="dark"]{--bg:#0b0b0a}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--fg);font:300 16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:400}
+header{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:22px 32px;z-index:5;font-size:12px;letter-spacing:.3em;font-weight:500}
+header button{background:none;border:0;color:var(--mute);font:inherit;font-size:11px;letter-spacing:.2em;cursor:pointer}
+main{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:90px 24px 56px;animation:in .7s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+.btn{background:var(--fg);color:var(--bg);border:0;padding:16px 34px;font:500 12px Inter;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:999px;transition:.25s}
+.btn:hover{transform:translateY(-1px);opacity:.9}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}.btn.ghost:hover{border-color:var(--fg)}
+.btn.hi{background:var(--hi);color:#fff}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+/* home */
+.home{justify-content:center;text-align:center;gap:28px;max-width:760px;margin:auto}
+.home h1{font-size:clamp(52px,11vw,118px);line-height:.95}
+.home p{color:var(--mute);max-width:420px}
+.reticle{width:64px;height:64px;position:relative;opacity:.8;animation:pulse 3s ease-in-out infinite}
+.reticle:before,.reticle:after{content:"";position:absolute;inset:0;border:1px solid var(--acc);clip-path:polygon(0 0,30% 0,30% 1px,1px 1px,1px 30%,0 30%,0 0,100% 0,100% 30%,calc(100% - 1px) 30%,calc(100% - 1px) 1px,70% 1px,70% 0,100% 0,100% 100%,70% 100%,70% calc(100% - 1px),calc(100% - 1px) calc(100% - 1px),calc(100% - 1px) 70%,100% 70%,100% 100%,0 100%,0 70%,1px 70%,1px calc(100% - 1px),30% calc(100% - 1px),30% 100%,0 100%)}
+@keyframes pulse{50%{transform:scale(1.15);opacity:.4}}
+/* capture */
+.drop{width:min(760px,100%);aspect-ratio:16/10;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:.3s;text-align:center;padding:24px}
+.drop.over{border-color:var(--acc);background:#ffffff08}
+.samples{margin-top:36px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.link{background:none;border:0;color:var(--fg);font:300 14px Inter;border-bottom:1px solid var(--line);padding:2px 0;cursor:pointer}.link:hover{border-color:var(--fg)}
+input.q{background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);font:300 16px Inter;padding:10px 2px;width:min(420px,100%);text-align:center;outline:0}
+input.q:focus{border-color:var(--acc)}
+/* image stage */
+.stage{position:relative;display:inline-block;max-width:100%;line-height:0;overflow:hidden;background:#000}
+.stage img{max-height:62vh;max-width:100%;display:block}
+.zoomwrap{transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.box{position:absolute;border:1.5px solid var(--c,var(--acc));box-shadow:0 0 0 9999px #0000004d;animation:lock .9s cubic-bezier(.2,.8,.2,1) both .3s}
+.box.guess{border-style:dashed;box-shadow:none}
+.box i{position:absolute;width:10px;height:10px;border:solid var(--c,var(--acc));border-width:0}
+.box i:nth-child(1){top:-5px;left:-5px;border-width:2px 0 0 2px}.box i:nth-child(2){top:-5px;right:-5px;border-width:2px 2px 0 0}.box i:nth-child(3){bottom:-5px;left:-5px;border-width:0 0 2px 2px}.box i:nth-child(4){bottom:-5px;right:-5px;border-width:0 2px 2px 0}
+.tag{position:absolute;left:-1px;top:100%;margin-top:8px;font:500 10px/1 Inter;letter-spacing:.18em;text-transform:uppercase;background:var(--c,var(--acc));color:#000;padding:6px 9px;white-space:nowrap}
+@keyframes lock{from{opacity:0;transform:scale(1.5)}to{opacity:1}}
+.scan{position:absolute;left:0;right:0;height:2px;background:var(--acc);box-shadow:0 0 28px 6px #e8c36a66;animation:scan 2.2s ease-in-out infinite alternate}
+@keyframes scan{from{top:0}to{top:100%}}
+.status{margin-top:34px;height:24px;color:var(--mute);letter-spacing:.2em;font-size:11px;text-transform:uppercase;text-align:center}
+/* diagnosis */
+.wrap{width:min(1040px,100%);display:flex;flex-direction:column;align-items:center}
+.banner{width:100%;border:1px solid var(--hi);background:#ff5b4514;padding:22px 26px;margin-bottom:28px;display:flex;gap:22px;align-items:flex-start}
+.banner b{font:500 11px Inter;letter-spacing:.24em;color:var(--hi);white-space:nowrap;padding-top:5px}
+.banner .serif{font-size:26px;line-height:1.2}
+.banner p{color:var(--mute);margin-top:6px;font-size:15px}
+.head{width:100%;margin-top:40px}
+.head h2{font-size:clamp(38px,6.5vw,72px);line-height:1;margin:10px 0 26px}
+.meta{display:flex;gap:44px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta div span{display:block;font:300 28px 'Instrument Serif',Georgia,serif}
+.sev-high{color:var(--hi)}.sev-medium{color:var(--med)}.sev-low{color:var(--low)}
+.note{color:var(--mute);font-size:14px;margin-top:14px}
+.grid{width:100%;display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px;margin-top:8px}
+.sec{padding:30px 0;border-bottom:1px solid var(--line)}
+.sec h3{margin-bottom:14px}
+.sec ul{list-style:none;padding:0}.sec li{padding:5px 0 5px 18px;position:relative;color:#d8d5cc}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .sec li{color:#2a2923}}
+.sec li:before{content:"";position:absolute;left:0;top:15px;width:8px;height:1px;background:var(--acc)}
+.actions{margin-top:44px}
+/* why sheet */
+.scrim{position:fixed;inset:0;background:#0009;z-index:9;animation:fade .3s both}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);border-left:1px solid var(--line);z-index:10;padding:calc(36px + env(safe-area-inset-top,0px)) 36px 36px;overflow:auto;animation:slide .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes slide{from{transform:translateX(40px);opacity:0}}@keyframes fade{from{opacity:0}}
+.sheet .x{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:24px;background:none;border:0;color:var(--mute);font:11px Inter;letter-spacing:.2em;cursor:pointer}
+.sheet section{margin-top:34px}
+.bar{height:2px;background:var(--line);margin-top:14px}.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width 1.1s .3s cubic-bezier(.2,.8,.2,1)}
+/* repair */
+.rep{width:min(1040px,100%);display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center;margin:auto 0}
+.num{font-size:clamp(90px,16vw,170px);line-height:.85;color:var(--acc);opacity:.9}
+.rep h2{font-size:clamp(28px,4vw,44px);letter-spacing:.04em;text-transform:uppercase;font-family:Inter;font-weight:500;margin:20px 0 14px;font-size:clamp(20px,2.6vw,28px);letter-spacing:.14em}
+.rep p{color:#c9c6bc;font-size:18px}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .rep p{color:#34332c}}
+.warn{margin-top:22px;border-left:2px solid var(--hi);padding:4px 0 4px 16px;font-size:14px;color:var(--hi)}
+.dots{display:flex;gap:8px;margin:28px 0}.dots i{width:28px;height:2px;background:var(--line);transition:.4s}.dots i.on{background:var(--acc)}
+.gate{max-width:560px;text-align:center;margin:auto;display:flex;flex-direction:column;gap:22px;align-items:center}
+.gate h2{font-size:clamp(40px,7vw,72px);line-height:1;color:var(--hi)}
+@media (max-width:760px){.grid,.rep{grid-template-columns:1fr}.banner{flex-direction:column;gap:10px}header{padding:18px 20px}.meta{gap:28px}}
+</style></head>
+<body>
+<header><span>REPAIR</span><button id="home" hidden>← START OVER</button></header>
+<div id="app"></div>
+<script>
+/* ============ API SERVICE — the only module to touch when the backend is ready ============
+   Set USE_MOCK=false: POSTs multipart (image, question) to /analyze (or API_URL) and expects the contract JSON.
+   Any failure falls back to a clean error screen; the UI only ever reads the fields below. */
+const API={USE_MOCK:true,API_URL:'/analyze',
+ async analyze(file,question,sampleKey){
+  if(!this.USE_MOCK){const fd=new FormData();fd.append('image',file);if(question)fd.append('question',question);
+   const r=await fetch(this.API_URL,{method:'POST',body:fd});if(!r.ok)throw new Error('analyze failed');return r.json();}
+  await new Promise(r=>setTimeout(r,4200));return MOCKS[sampleKey||'unknown'];}};
+const MOCKS={
+ bike:{object:'Road bicycle — rear drivetrain',problem:'Rear derailleur misalignment',confidence:.84,severity:'medium',location:{x:.58,y:.5,width:.2,height:.3},
+  observations:['Derailleur cage sits visibly off the cassette’s centre line','Upper jockey wheel is angled away from the chain path','Chain runs at an uneven tilt across the cogs'],
+  possible_causes:['Bent derailleur hanger, often from a fall or a knock while parked','Cable tension has stretched since the last adjustment'],
+  recommended_action:['Check the derailleur: Look at the hanger from behind the bike and confirm it is straight to the wheel.','Check cable tension: Look for excess slack at the barrel adjuster and shift lever.','Test before riding: Shift through every gear on a stand. Do not ride if the chain keeps dropping.'],
+  risk:'medium',safety_warning:'A chain that drops under load can cause a sudden loss of drive and a fall.'},
+ outlet:{object:'Wall power outlet',problem:'Heat damage around outlet',confidence:.91,severity:'high',location:{x:.37,y:.3,width:.26,height:.4},
+  observations:['Dark scorch marks radiate from the lower socket','Faceplate plastic looks discoloured and slightly warped','Soot staining around the screw terminals'],
+  possible_causes:['Loose wiring connection producing heat under load','Overloaded circuit or a failing plug'],
+  recommended_action:['Stop using it: Unplug everything and leave the outlet unused.','Cut the power: Switch off the breaker for this circuit if it is safe to reach.','Call an electrician: Have the wiring inspected before anything is plugged back in.'],
+  risk:'high',safety_warning:'This may be a dangerous electrical condition with fire risk. Do not attempt this repair yourself. Consult a qualified electrician.'},
+ unknown:{object:'Unclear object',problem:'Possible surface wear or damage',confidence:.38,severity:'low',location:{x:.32,y:.3,width:.36,height:.4},
+  observations:['A region looks different in texture from its surroundings','The photo is too far away to judge depth or cause'],
+  possible_causes:['Normal wear','Cosmetic damage — not enough detail to be sure'],
+  recommended_action:['Retake the photo: Move closer in good light, with the area filling the frame.','Add context: Tell us what the object is and what it should be doing.'],
+  risk:'low',safety_warning:''}};
+/* ============ sample images (inline SVG so no network is needed) ============ */
+const svg=s=>'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><radialGradient id="g" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="#3a3935"/><stop offset="1" stop-color="#121211"/></radialGradient></defs><rect width="1200" height="800" fill="url(#g)"/>'+s+'</svg>');
+const IMG={bike:svg('<g fill="none" stroke="#9a978c" stroke-width="10"><circle cx="520" cy="500" r="300" stroke="#55534b" stroke-width="22"/><circle cx="520" cy="500" r="280" stroke-width="2" stroke="#777"/><circle cx="520" cy="500" r="34"/><circle cx="520" cy="500" r="52"/><circle cx="520" cy="500" r="72"/><circle cx="520" cy="500" r="92" stroke-width="8"/><path d="M520 408L780 470 700 580 520 592" stroke="#c9a24a" stroke-width="6"/><path d="M560 500L880 410" stroke-width="22" stroke="#4a4944"/></g><g fill="#b9b6aa"><path d="M770 440l60-30 50 120-40 20z" transform="rotate(14 800 500)"/><circle cx="815" cy="560" r="26" fill="#3a3935" stroke="#c9c6bc" stroke-width="6"/><circle cx="790" cy="625" r="22" fill="#3a3935" stroke="#c9c6bc" stroke-width="6"/></g>'),
+ outlet:svg('<rect x="0" y="0" width="1200" height="800" fill="#2b2a27"/><rect x="440" y="230" width="320" height="340" rx="22" fill="#d8d3c4"/><g fill="#1b1a18"><rect x="540" y="290" width="14" height="46" rx="3"/><rect x="646" y="290" width="14" height="46" rx="3"/><rect x="540" y="450" width="14" height="46" rx="3"/><rect x="646" y="450" width="14" height="46" rx="3"/><circle cx="600" cy="360" r="14"/><circle cx="600" cy="520" r="14"/></g><ellipse cx="600" cy="520" rx="130" ry="90" fill="#000" opacity=".45"/><ellipse cx="600" cy="540" rx="80" ry="55" fill="#000" opacity=".5"/>'),
+ unknown:svg('<g opacity=".7"><rect x="380" y="260" width="440" height="280" rx="30" fill="#55524a"/><circle cx="520" cy="400" r="70" fill="#6a665c"/><rect x="620" y="330" width="130" height="110" fill="#403e38"/></g>')};
+/* ============ tiny app shell ============ */
+const $=(h)=>{const d=document.createElement('main');d.innerHTML=h;return d},app=document.getElementById('app');
+const S={img:null,file:null,key:null,q:'',res:null};
+const pct=n=>Math.round(n*100),sev=s=>({high:'High',medium:'Medium',low:'Low'}[s]||s);
+function show(el){app.replaceChildren(el);document.getElementById('home').hidden=el.dataset.v==='home';scrollTo(0,0)}
+const view=(v,h)=>{const d=$(h);d.dataset.v=v;return d};
+function bboxHTML(r,guess){const l=r.location,c=guess?'var(--mute)':r.risk==='high'?'var(--hi)':'var(--acc)';
+ return `<div class="box ${guess?'guess':''}" style="--c:${c};left:${l.x*100}%;top:${l.y*100}%;width:${l.width*100}%;height:${l.height*100}%"><i></i><i></i><i></i><i></i><span class="tag">${guess?'Possible area':'Suspected problem'}</span></div>`}
+function home(){const d=view('home',`<div class="home"><div class="reticle"></div><span class="eyebrow">Visual diagnosis for the physical world</span><h1 class="serif">What’s wrong<br>with this?</h1><p>Show REPAIR the problem. We’ll look closely and tell you what we see.</p><button class="btn" id="go">Show the problem</button></div>`);
+ d.querySelector('#go').onclick=capture;show(d)}
+function capture(){const d=view('capture',`<div class="wrap" style="margin:auto"><div class="drop" id="dz"><span class="eyebrow">Step 1</span><h2 class="serif" style="font-size:44px">Show the problem</h2><p style="color:var(--mute)">Drop a photo, or take one now. Get close and keep the area in focus.</p><div class="row"><button class="btn" id="pick">Upload photo</button><button class="btn ghost" id="cam">Take photo</button></div><input class="q" id="q" placeholder="Optional — what seems wrong?"></div>
+ <div class="samples"><span class="eyebrow">Or try an example</span><div class="row"><button class="link" data-s="bike">Bike won’t shift</button><button class="link" data-s="outlet">Burnt outlet</button></div></div>
+ <input type="file" accept="image/*" id="f" hidden><input type="file" accept="image/*" capture="environment" id="c" hidden></div>`);
+ const f=d.querySelector('#f'),c=d.querySelector('#c'),dz=d.querySelector('#dz'),q=d.querySelector('#q');
+ const take=file=>{if(!file)return;S.q=q.value;S.file=file;S.key='unknown';S.img=URL.createObjectURL(file);analyze()};
+ d.querySelector('#pick').onclick=()=>f.click();d.querySelector('#cam').onclick=()=>c.click();f.onchange=()=>take(f.files[0]);c.onchange=()=>take(c.files[0]);
+ dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=e=>{e.preventDefault();take(e.dataTransfer.files[0])};
+ d.querySelectorAll('[data-s]').forEach(b=>b.onclick=async()=>{S.q=q.value;S.key=b.dataset.s;S.img=IMG[S.key];S.file=await (await fetch(S.img)).blob().catch(()=>null);analyze()});show(d)}
+async function analyze(){const lines=['Reading the image','Locating the object','Inspecting the surface','Weighing the evidence'];
+ const d=view('analyzing',`<div class="wrap" style="margin:auto"><div class="stage"><img src="${S.img}" alt="Your photo"><div class="scan"></div></div><div class="status" id="st">${lines[0]}</div></div>`);show(d);
+ let i=0;const t=setInterval(()=>{d.querySelector('#st')&&(d.querySelector('#st').textContent=lines[++i%lines.length])},1000);
+ try{S.res=await API.analyze(S.file,S.q,S.key);clearInterval(t);diagnosis()}catch(e){clearInterval(t);error()}}
+function error(){const d=view('err',`<div class="gate"><h2 class="serif" style="color:var(--fg)">We couldn’t read that.</h2><p style="color:var(--mute)">Something went wrong while analysing the photo. Try again, or retake it in better light.</p><button class="btn" id="r">Try again</button></div>`);d.querySelector('#r').onclick=capture;show(d)}
+const list=a=>`<ul>${a.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+function diagnosis(){const r=S.res,low=r.confidence<.55,hi=r.risk==='high';
+ const conf=low?`${pct(r.confidence)}% — low`:r.confidence<.75?`${pct(r.confidence)}% — moderate`:`${pct(r.confidence)}%`;
+ const d=view('diag',`<div class="wrap">
+ ${hi?`<div class="banner" role="alert"><b>HIGH RISK</b><div><div class="serif">Do not attempt this repair yourself.</div><p>${r.safety_warning}</p></div></div>`:''}
+ <div class="stage"><img src="${S.img}" alt="${r.object}">${bboxHTML(r,low)}</div>
+ <div class="head"><span class="eyebrow">${r.object}</span><h2 class="serif">${low?'Possibly: '+r.problem.replace(/^Possible /,'').toLowerCase():r.problem}</h2>
+ <div class="meta"><div><span class="eyebrow">Confidence</span><span>${conf}</span></div><div><span class="eyebrow">Severity</span><span class="sev-${r.severity}">${sev(r.severity)}</span></div><div><span class="eyebrow">Risk</span><span class="sev-${r.risk}">${sev(r.risk)}</span></div></div>
+ ${low?`<p class="note">We’re not sure about this one. Treat it as a guess, not a diagnosis — a closer photo will help.</p>`:''}</div>
+ <div class="grid"><div class="sec"><h3 class="eyebrow">What we found</h3><p style="font-size:19px">${r.object}: ${low?'we may be seeing ':'we see '}<span class="serif" style="font-size:24px">${r.problem.toLowerCase()}</span>.</p></div>
+ <div class="sec"><h3 class="eyebrow">Why we think so</h3>${list(r.observations)}</div>
+ <div class="sec"><h3 class="eyebrow">${low?'It could be':'Possible cause'}</h3>${list(r.possible_causes)}</div>
+ <div class="sec"><h3 class="eyebrow">What to do next</h3>${list(r.recommended_action.map(s=>s.split(':')[0]))}</div></div>
+ ${!hi&&r.safety_warning?`<p class="note" style="margin-top:28px;max-width:560px">⚠ ${r.safety_warning}</p>`:''}
+ <div class="actions row"><button class="btn ghost" id="why">Why?</button>${low?'<button class="btn" id="retake">Retake photo</button>':`<button class="btn ${hi?'hi':''}" id="fix">${hi?'See safe next steps':'How to fix'}</button>`}</div></div>`);
+ d.querySelector('#why').onclick=why;const rb=d.querySelector('#retake');rb&&(rb.onclick=capture);const fb=d.querySelector('#fix');fb&&(fb.onclick=()=>repair(0));show(d)}
+function why(){const r=S.res,el=document.createElement('div');
+ el.innerHTML=`<div class="scrim"></div><aside class="sheet"><button class="x">CLOSE ✕</button><span class="eyebrow">Why we think so</span>
+ <section><h3 class="eyebrow" style="color:var(--acc)">Observed</h3>${list(r.observations)}</section>
+ <section><h3 class="eyebrow" style="color:var(--acc)">Likely cause</h3><p class="serif" style="font-size:26px;line-height:1.25">${r.possible_causes[0]}</p></section>
+ <section><h3 class="eyebrow" style="color:var(--acc)">Confidence</h3><div class="serif" style="font-size:54px;line-height:1">${pct(r.confidence)}%</div><div class="bar"><i></i></div>
+ <p class="note">${r.confidence<.55?'Low confidence. This is a best guess from a limited view.':'This is an estimate from the photo alone. A hands-on check can confirm or rule it out.'}</p></section></aside>`;
+ document.body.appendChild(el);const close=()=>el.remove();el.querySelector('.scrim').onclick=close;el.querySelector('.x').onclick=close;
+ requestAnimationFrame(()=>el.querySelector('.bar i').style.width=pct(S.res.confidence)+'%')}
+function repair(i,ack){const r=S.res,hi=r.risk==='high';
+ if(hi&&!ack){const g=view('gate',`<div class="gate"><span class="eyebrow" style="color:var(--hi)">High risk</span><h2 class="serif">Do not attempt this repair yourself.</h2><p style="color:var(--mute)">${r.safety_warning}</p><p style="font-size:14px">These steps are for making the situation safe, not for fixing it.</p><div class="row"><button class="btn hi" id="ok">I understand — show safe steps</button><button class="btn ghost" id="bk">Back</button></div></div>`);
+  g.querySelector('#ok').onclick=()=>repair(0,true);g.querySelector('#bk').onclick=diagnosis;return show(g)}
+ const steps=r.recommended_action.map(s=>{const [t,...b]=s.split(':');return{t,b:b.join(':').trim()}}),st=steps[i],last=i===steps.length-1;
+ const l=r.location,z=i===0||st.region,sc=Math.min(2.2,.5/Math.max(l.width,l.height));
+ const warn=hi?'Keep clear of the area. Do not touch exposed parts.':last&&r.safety_warning?r.safety_warning:'';
+ const d=view('rep',`<div class="rep"><div><div class="stage" style="width:100%"><div class="zoomwrap" style="transform-origin:${(l.x+l.width/2)*100}% ${(l.y+l.height/2)*100}%;transform:scale(${z?sc:1})"><img src="${S.img}" alt=""><div class="box" style="--c:${hi?'var(--hi)':'var(--acc)'};left:${l.x*100}%;top:${l.y*100}%;width:${l.width*100}%;height:${l.height*100}%;box-shadow:none;animation:none"><i></i><i></i><i></i><i></i></div></div></div></div>
+ <div><div class="num serif">${String(i+1).padStart(2,'0')}</div><h2>${st.t}</h2><p>${st.b||''}</p>${warn?`<div class="warn">${warn}</div>`:''}
+ <div class="dots">${steps.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</div>
+ <div class="row" style="justify-content:flex-start"><button class="btn ghost" id="pv">${i?'Back':'Diagnosis'}</button><button class="btn" id="nx">${last?'Done':'Next step'}</button></div></div></div>`);
+ d.querySelector('#pv').onclick=()=>i?repair(i-1,ack):diagnosis();d.querySelector('#nx').onclick=()=>last?done():repair(i+1,ack);show(d)}
+function done(){const hi=S.res.risk==='high';const d=view('done',`<div class="gate"><span class="eyebrow">Next step</span><h2 class="serif" style="color:var(--fg)">${hi?'Call a qualified professional.':'Test it before you rely on it.'}</h2><p style="color:var(--mute)">${hi?'Leave the area unused until it has been inspected.':'If the problem comes back, or you’re unsure, a professional can confirm the cause.'}</p><button class="btn" id="n">Diagnose something else</button></div>`);d.querySelector('#n').onclick=capture;show(d)}
+document.getElementById('home').onclick=home;home();
+</script></body></html>
