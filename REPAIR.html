@@ -99,6 +99,19 @@ input.q:focus{border-color:var(--acc)}
 .gate{max-width:560px;text-align:center;margin:auto;display:flex;flex-direction:column;gap:22px;align-items:center}
 .gate h2{font-size:clamp(40px,7vw,72px);line-height:1;color:var(--hi)}
 @media (max-width:760px){.grid,.rep{grid-template-columns:1fr}.banner{flex-direction:column;gap:10px}header{padding:18px 20px}.meta{gap:28px}}
+/* confidence dial */
+.cdial-wrap{display:flex;flex-direction:column;gap:0}
+.cdial-wrap>.eyebrow{margin-bottom:10px}
+.cdial{display:block;overflow:visible}
+.cdial-track{fill:none;stroke:var(--line);stroke-width:1.5}
+.cdial-arc{fill:none;stroke:var(--acc);stroke-width:1.5;stroke-linecap:round;transition:none}
+.cdial-tail{fill:none;stroke:var(--acc);stroke-width:3;stroke-linecap:round;opacity:.28}
+.cdial-head{fill:var(--acc)}
+.cdial-tick{stroke:var(--mute);stroke-width:.8}
+.cdial-tick.major{stroke:var(--fg);stroke-width:1;opacity:.55}
+.cdial-label{font:500 22px/1 Inter,system-ui,sans-serif;fill:var(--fg);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.cdial-unit{font:300 11px/1 Inter,system-ui,sans-serif;fill:var(--mute);letter-spacing:.18em}
+.cdial-badge{font:400 9px/1 Inter,system-ui,sans-serif;fill:var(--acc);letter-spacing:.22em;text-transform:uppercase;opacity:.85}
 </style></head>
 <body>
 <header><span>REPAIR</span><button id="home" hidden>← START OVER</button></header>
@@ -220,7 +233,7 @@ function diagnosis(){const r=S.res,low=r.confidence<.55,hi=r.risk==='high';
  ${hi?`<div class="banner" role="alert"><b>HIGH RISK</b><div><div class="serif">Do not attempt this repair yourself.</div><p>${r.safety_warning}</p></div></div>`:''}
  <div class="stage"><img src="${S.img}" alt="${r.object}">${bboxHTML(r,low)}</div>
  <div class="head"><span class="eyebrow">${r.object}</span><h2 class="serif">${low?'Possibly: '+r.problem.replace(/^Possible /,'').toLowerCase():r.problem}</h2>
- <div class="meta"><div><span class="eyebrow">Confidence</span><span>${conf}</span></div><div><span class="eyebrow">Severity</span><span class="sev-${r.severity}">${sev(r.severity)}</span></div><div><span class="eyebrow">Risk</span><span class="sev-${r.risk}">${sev(r.risk)}</span></div></div>
+ <div class="meta"><div id="conf-dial-slot"></div><div><span class="eyebrow">Severity</span><span class="sev-${r.severity}">${sev(r.severity)}</span></div><div><span class="eyebrow">Risk</span><span class="sev-${r.risk}">${sev(r.risk)}</span></div></div>
  ${low?`<p class="note">We’re not sure about this one. Treat it as a guess, not a diagnosis — a closer photo will help.</p>`:''}</div>
  <div class="grid"><div class="sec"><h3 class="eyebrow">What we found</h3><p style="font-size:19px">${r.object}: ${low?'we may be seeing ':'we see '}<span class="serif" style="font-size:24px">${r.problem.toLowerCase()}</span>.</p></div>
  <div class="sec"><h3 class="eyebrow">Why we think so</h3>${list(r.observations)}</div>
@@ -228,7 +241,83 @@ function diagnosis(){const r=S.res,low=r.confidence<.55,hi=r.risk==='high';
  <div class="sec"><h3 class="eyebrow">What to do next</h3>${list(r.recommended_action.map(s=>s.split(':')[0]))}</div></div>
  ${!hi&&r.safety_warning?`<p class="note" style="margin-top:28px;max-width:560px">⚠ ${r.safety_warning}</p>`:''}
  <div class="actions row"><button class="btn ghost" id="why">Why?</button>${low?'<button class="btn" id="retake">Retake photo</button>':`<button class="btn ${hi?'hi':''}" id="fix">${hi?'See safe next steps':'How to fix'}</button>`}</div></div>`);
- d.querySelector('#why').onclick=why;const rb=d.querySelector('#retake');rb&&(rb.onclick=capture);const fb=d.querySelector('#fix');fb&&(fb.onclick=()=>repair(0));show(d)}
+ d.querySelector('#why').onclick=why;const rb=d.querySelector('#retake');rb&&(rb.onclick=capture);const fb=d.querySelector('#fix');fb&&(fb.onclick=()=>repair(0));show(d);
+ requestAnimationFrame(()=>confDial(d.querySelector('#conf-dial-slot'),r.confidence))}
+/* ===== CONFIDENCE DIAL — precision instrument readout for the diagnosis screen ===== */
+function confDial(slot,rawConf){
+ if(!slot)return;
+ /* normalise: accept 0–1 or 0–100 */
+ let cv=rawConf==null?null:(rawConf>1?rawConf/100:rawConf);
+ if(cv==null||isNaN(cv)){slot.innerHTML='';return}
+ cv=Math.max(0,Math.min(1,cv));
+ const pctVal=Math.round(cv*100);
+ const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ /* geometry */
+ const SZ=96,CX=SZ/2,CY=SZ/2,R=34,TICK_R=44;
+ const SWEEP=270,START_DEG=135; /* arc starts at bottom-left, sweeps clockwise to bottom-right */
+ const deg2rad=d=>d*Math.PI/180;
+ const polar=(cx,cy,r,deg)=>[cx+r*Math.cos(deg2rad(deg)),cy+r*Math.sin(deg2rad(deg))];
+ const arc=(r,startDeg,endDeg)=>{
+  if(Math.abs(endDeg-startDeg)<.01)return '';
+  const s=polar(CX,CY,r,startDeg),e=polar(CX,CY,r,endDeg),large=Math.abs(endDeg-startDeg)>180?1:0;
+  return `M${s[0].toFixed(3)} ${s[1].toFixed(3)} A${r} ${r} 0 ${large} 1 ${e[0].toFixed(3)} ${e[1].toFixed(3)}`};
+ /* build tick marks */
+ const TICKS=36;let tickSVG='';
+ for(let i=0;i<=TICKS;i++){
+  const pf=i/TICKS,deg=START_DEG+pf*SWEEP;
+  const major=i%9===0;
+  const inner=polar(CX,CY,TICK_R-(major?7:4),deg),outer=polar(CX,CY,TICK_R-(major?1:2),deg);
+  tickSVG+=`<line class="cdial-tick${major?' major':''}" x1="${inner[0].toFixed(2)}" y1="${inner[1].toFixed(2)}" x2="${outer[0].toFixed(2)}" y2="${outer[1].toFixed(2)}"/>`}
+ /* build full track arc */
+ const trackPath=arc(R,START_DEG,START_DEG+SWEEP);
+ /* build live arcs (will be updated by animation) */
+ const tailId='cd-tail-'+Date.now(),arcId='cd-arc-'+Date.now(),headId='cd-head-'+Date.now(),lblId='cd-lbl-'+Date.now();
+ /* confidence tier badge */
+ const badge=cv<.55?'LOW':cv<.75?'MOD':'HIGH';
+ slot.innerHTML=`<div class="cdial-wrap"><span class="eyebrow">Confidence</span>
+<svg class="cdial" width="${SZ}" height="${SZ}" viewBox="0 0 ${SZ} ${SZ}" role="img" aria-label="Confidence ${pctVal}%">
+ <defs><filter id="cd-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+ <path class="cdial-track" d="${trackPath}"/>
+ <g>${tickSVG}</g>
+ <path class="cdial-tail" id="${tailId}" d=""/>
+ <path class="cdial-arc" id="${arcId}" d=""/>
+ <circle class="cdial-head" id="${headId}" r="3" cx="${CX}" cy="${CY}" filter="url(#cd-glow)" opacity="0"/>
+ <text class="cdial-label" id="${lblId}" x="${CX}" y="${CY+4}" text-anchor="middle">${rm?pctVal:'0'}</text>
+ <text class="cdial-unit" x="${CX}" y="${CY+18}" text-anchor="middle">%</text>
+ <text class="cdial-badge" x="${CX}" y="${CY-18}" text-anchor="middle">${badge}</text>
+</svg></div>`;
+ const tailEl=document.getElementById(tailId),arcEl=document.getElementById(arcId),headEl=document.getElementById(headId),lblEl=document.getElementById(lblId);
+ if(!arcEl)return;
+ /* if reduced motion: snap to final and exit */
+ if(rm){
+  const fDeg=START_DEG+cv*SWEEP;
+  arcEl.setAttribute('d',arc(R,START_DEG,fDeg));
+  tailEl.setAttribute('d',arc(R,Math.max(START_DEG,fDeg-40),fDeg));
+  const hp=polar(CX,CY,R,fDeg);headEl.setAttribute('cx',hp[0].toFixed(2));headEl.setAttribute('cy',hp[1].toFixed(2));headEl.setAttribute('opacity','1');
+  return}
+ /* animate: ease out cubic 0→cv over ~950ms, then comet fades */
+ const DUR=950,TAIL_SPAN=50;
+ let start=null,settled=false;
+ const ease=t=>1-Math.pow(1-t,3);
+ const frame=now=>{
+  if(!arcEl.isConnected)return;
+  if(!start)start=now;
+  const k=Math.min(1,(now-start)/DUR),prog=ease(k)*cv;
+  const curDeg=START_DEG+prog*SWEEP;
+  const tailStart=START_DEG+Math.max(0,(prog-(TAIL_SPAN/SWEEP))*SWEEP);
+  arcEl.setAttribute('d',arc(R,START_DEG,curDeg));
+  tailEl.setAttribute('d',arc(R,tailStart,curDeg));
+  const hp=polar(CX,CY,R,curDeg);
+  headEl.setAttribute('cx',hp[0].toFixed(2));headEl.setAttribute('cy',hp[1].toFixed(2));
+  headEl.setAttribute('opacity',k<.1?k*10:1);
+  lblEl.textContent=Math.round(prog*100);
+  if(k<1){requestAnimationFrame(frame);return}
+  /* settled — fade comet tail and head */
+  if(!settled){settled=true;
+   tailEl.style.transition='opacity .6s .1s ease';tailEl.style.opacity='0';
+   headEl.style.transition='opacity .5s .15s ease';headEl.style.opacity='0';
+   lblEl.textContent=pctVal}};
+ requestAnimationFrame(frame)}
 function why(){const r=S.res,el=document.createElement('div');
  el.innerHTML=`<div class="scrim"></div><aside class="sheet"><button class="x">CLOSE ✕</button><span class="eyebrow">Why we think so</span>
  <section><h3 class="eyebrow" style="color:var(--acc)">Observed</h3>${list(r.observations)}</section>
