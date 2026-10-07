@@ -3,7 +3,9 @@
 IMAGE -> local **Qwen3-VL-8B-Instruct** (Transformers, 4-bit) -> JSON -> validation -> optional skeptical 2nd pass -> deterministic safety layer -> `POST /analyze`
 
 ```
-Frontend --POST /analyze--> FastAPI (auth, size limit, bounded queue, GPU lock)
+Frontend --POST /analyze--
+
+> FastAPI (auth, size limit, bounded queue, GPU lock)
    -> images.prepare (verify, EXIF, RGB, resize)
    -> vlm.generate  [Qwen3-VL-8B-Instruct, singleton, deadline-bounded]  pass 1: investigator
    -> parsing + Pydantic + semantic checks (status, confidence, bbox, observation vs inference)
