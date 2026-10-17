@@ -59,7 +59,6 @@ REPAIR is a **visual diagnostic assistant**. A user uploads an image of a physic
 
 ---
 
-
 ## 🚦 Diagnostic states
 
 Every response carries exactly one `status`:
