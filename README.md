@@ -57,6 +57,7 @@ REPAIR is a **visual diagnostic assistant**. A user uploads an image of a physic
 - 🔐 **Hardened by default**: API key auth, size limits, bounded queue, GPU lock, sanitized errors, restricted CORS
 - 🧪 **Test suite that runs without a GPU** (model is stubbed), plus live-model and evaluation runners
 
+
 ---
 
 ## 🚦 Diagnostic states
