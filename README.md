@@ -15,6 +15,7 @@ Upload a photo. Ask *"What's wrong with this?"* Get an evidence-based, safety-ch
 
 [Overview](#-overview) · [Quick start](#-quick-start) · [API](#-api-reference) · [How it works](#-how-it-works) · [Security](#-security-design) · [Testing](#-testing) · [Troubleshooting](#-troubleshooting)
 
+
 </div>
 
 ---
