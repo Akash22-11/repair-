@@ -45,6 +45,7 @@ REPAIR is a **visual diagnostic assistant**. A user uploads an image of a physic
 
 ---
 
+
 ## ✨ Features
 
 - 🧠 **Local open-weight VLM**: Qwen3-VL-8B-Instruct, 4-bit quantized, no external API calls
