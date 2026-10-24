@@ -36,7 +36,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .reticle{width:64px;height:64px;position:relative;opacity:.8;animation:pulse 3s ease-in-out infinite}
 .reticle:before,.reticle:after{content:"";position:absolute;inset:0;border:1px solid var(--acc);clip-path:polygon(0 0,30% 0,30% 1px,1px 1px,1px 30%,0 30%,0 0,100% 0,100% 30%,calc(100% - 1px) 30%,calc(100% - 1px) 1px,70% 1px,70% 0,100% 0,100% 100%,70% 100%,70% calc(100% - 1px),calc(100% - 1px) calc(100% - 1px),calc(100% - 1px) 70%,100% 70%,100% 100%,0 100%,0 70%,1px 70%,1px calc(100% - 1px),30% calc(100% - 1px),30% 100%,0 100%)}
 @keyframes pulse{50%{transform:scale(1.15);opacity:.4}}
-/* capture */
+
+   /* capture */
 .drop{width:min(760px,100%);aspect-ratio:16/10;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:.3s;text-align:center;padding:24px}
 .drop.over{border-color:var(--acc);background:#ffffff08}
 .samples{margin-top:36px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
