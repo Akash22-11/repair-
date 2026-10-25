@@ -26,6 +26,7 @@ question = input(
 if not question:
     question = "What's wrong with this object?"
 
+
 messages = [
     {
         "role": "user",
