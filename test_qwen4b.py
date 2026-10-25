@@ -60,7 +60,6 @@ inputs = processor(
     return_tensors="pt",
 )
 
-# Put tensors on the model's execution device.
 inputs = {
     k: v.to(model.device) if hasattr(v, "to") else v
     for k, v in inputs.items()
