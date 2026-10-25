@@ -64,7 +64,6 @@ inputs = {
     k: v.to(model.device) if hasattr(v, "to") else v
     for k, v in inputs.items()
 }
-
 print("Running inference...\n")
 
 with torch.inference_mode():
