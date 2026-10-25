@@ -56,7 +56,8 @@ _CTRL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
 
 def clean_question(q: str | None) -> str:
     """Untrusted user text: strip control chars and our delimiter, collapse whitespace, cap length."""
-    q = _CTRL.sub(" ", q or "").replace("<<<", " ").replace(">>>", " ")
+    q = str(q or "")
+    q = _CTRL.sub(" ", q).replace("<<<", " ").replace(">>>", " ")
     q = " ".join(q.split())[: config.QUESTION_MAX_CHARS]
     return q or DEFAULT_QUESTION
 

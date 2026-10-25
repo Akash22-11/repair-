@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from app import config, parsing, pipeline
+from app import config, parsing, pipeline, prompts, safety
 from app.errors import InvalidModelOutput
 from tests.conftest import P1, P2, post
 
@@ -105,6 +105,14 @@ def test_question_is_length_limited(client, stub):
     s = stub(P1, P2)
     post(client, question="A" * 5000)
     assert "A" * (config.QUESTION_MAX_CHARS + 1) not in s.calls[0]["user"]
+
+
+def test_question_and_safety_handle_non_string_input():
+    assert prompts.clean_question(None) == "What's wrong with this?"
+    out = safety.apply(None, None, None, None)
+    assert out["risk"] == "low"
+    assert out["actions"] == []
+    assert out["warning"]
 
 
 def test_instruction_text_echoed_from_image_is_dropped(client, stub):

@@ -52,7 +52,15 @@ _NEGATED = re.compile(r"^\s*(?:do not|don't|never|avoid)\b", re.I)
 GENERIC_WARNING = "No elevated hazard detected from the image alone. Stop and consult a professional if anything feels unsafe."
 
 
-def apply(text: str, risk: str, actions: list, professional: bool) -> dict:
+def apply(text: str | None, risk: str | None, actions: list | tuple | set | None, professional: bool | None) -> dict:
+    text = str(text or "")
+    raw_actions = actions if isinstance(actions, (list, tuple, set)) else []
+    actions = []
+    for a in raw_actions:
+        s = str(a).strip() if a is not None else ""
+        if s:
+            actions.append(s)
+    risk = str(risk or "low").lower()
     risk = risk if risk in ORDER else "low"
     hits = [r for r, rx in _COMPILED if rx.search(text)]
     flags = [h["name"] for h in hits]
@@ -69,4 +77,4 @@ def apply(text: str, risk: str, actions: list, professional: bool) -> dict:
     actions = (safe_first + [a for a in actions if a not in safe_first])[:5]
     warning = " ".join(h["warning"] for h in hits) or GENERIC_WARNING
     return {"risk": risk, "actions": actions, "warning": warning, "flags": flags,
-            "professional": professional or bool(hits and risk == "high")}
+            "professional": bool(professional) or bool(hits and risk == "high")}
