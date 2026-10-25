@@ -1,5 +1,3 @@
-"""Real Qwen3-VL on your GPU. Run:  REPAIR_LIVE=1 python -m pytest tests/test_live_model.py -s
-Behavioural cases that need real photos use tests/images/<name>.jpg and are skipped if the file is absent."""
 import os
 import pathlib
 
