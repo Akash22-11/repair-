@@ -16,7 +16,6 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
 print("MODEL LOADED SUCCESSFULLY")
 print("GPU memory allocated:",
       round(torch.cuda.memory_allocated() / 1024**3, 2), "GB")
-
 image_path = input("\nEnter image path: ").strip().strip('"')
 
 question = input(
