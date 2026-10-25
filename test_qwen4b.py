@@ -6,7 +6,6 @@ MODEL_ID = "FenomAI/Qwen3-VL-4B-Instruct-AWQ-4bit"
 
 print("Loading processor...")
 processor = AutoProcessor.from_pretrained(MODEL_ID)
-
 print("Loading model...")
 model = Qwen3VLForConditionalGeneration.from_pretrained(
     MODEL_ID,
