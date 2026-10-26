@@ -17,7 +17,6 @@ Upload a photo. Ask *"What's wrong with this?"* Get an evidence-based, safety-ch
 
 </div>
 ---
-
 ## 📖 Overview
 
 REPAIR is a **visual diagnostic assistant**. A user uploads an image of a physical object (a bike, an appliance, a wall, a laptop, a plant pot) and optionally asks a question. A local open-weight **Vision-Language Model (VLM)** inspects the image and returns a structured diagnosis:
