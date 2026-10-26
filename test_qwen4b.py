@@ -13,6 +13,7 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
     torch_dtype=torch.float16,
 )
 
+
 print("MODEL LOADED SUCCESSFULLY")
 print("GPU memory allocated:",
       round(torch.cuda.memory_allocated() / 1024**3, 2), "GB")
