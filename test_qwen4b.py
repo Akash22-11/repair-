@@ -2,6 +2,7 @@ import torch
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
 
+
 MODEL_ID = "FenomAI/Qwen3-VL-4B-Instruct-AWQ-4bit"
 
 print("Loading processor...")
