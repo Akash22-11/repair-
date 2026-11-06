@@ -169,9 +169,10 @@ huggingface-cli download Qwen/Qwen3-VL-8B-Instruct
 
 ### 3. Configure
 
-Edit `.env`. At minimum, set an API key if the server will be reachable by anyone but you:
+Edit `.env`. Local development can leave `APP_ENV=development` and omit the API key. Before deploying, set `APP_ENV=production` and configure a long random API key; the app refuses to start in production without it:
 
 ```env
+APP_ENV=production
 REPAIR_API_KEY=change-me-to-a-long-random-string
 CORS_ORIGINS=http://localhost:3000
 ```
@@ -292,7 +293,8 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `REPAIR_API_KEY` | unset | Key required in `X-API-Key`. **If unset, auth is disabled** |
+| `APP_ENV` | `development` | `development`, `test`, or `production`; production requires an API key |
+| `REPAIR_API_KEY` | unset | Shared key required in `X-API-Key` in production; if unset in development/test, auth is disabled |
 | `CORS_ORIGINS` | `http://localhost:3000` | Allowed browser origins (no longer `*`) |
 
 `.env.example` lists the remaining settings (model ID, upload limit, image max side, generation length, inference deadline, queue size). Keep it as the single source of truth.
