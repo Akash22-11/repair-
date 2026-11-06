@@ -90,7 +90,9 @@ input.q:focus{border-color:var(--acc)}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .sec li{color:#2a2923}}
 .sec li:before{content:"";position:absolute;left:0;top:15px;width:8px;height:1px;background:var(--acc)}
 .actions{margin-top:44px}
-/* why sheet */
+
+   /* why sheet */
+   
 .scrim{position:fixed;inset:0;background:#0009;z-index:9;animation:fade .3s both}
 .sheet{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);border-left:1px solid var(--line);z-index:10;padding:calc(36px + env(safe-area-inset-top,0px)) 36px 36px;overflow:auto;animation:slide .45s cubic-bezier(.2,.8,.2,1) both}
 @keyframes slide{from{transform:translateX(40px);opacity:0;filter:blur(4px)}}@keyframes fade{from{opacity:0}}
