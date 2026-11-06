@@ -46,3 +46,8 @@ MAX_QUEUE = int(_env("MAX_QUEUE", "2"))
 
 CORS_ORIGINS = [o.strip() for o in _env("CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
 API_KEY = _env("REPAIR_API_KEY", "")
+APP_ENV = _env("APP_ENV", _env("ENVIRONMENT", _env("NODE_ENV", "development"))).lower()
+if APP_ENV not in {"development", "test", "production"}:
+    raise ValueError("APP_ENV must be development, test, or production")
+if APP_ENV == "production" and not API_KEY:
+    raise ValueError("REPAIR_API_KEY must be set when APP_ENV=production")
